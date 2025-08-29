@@ -6,8 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Analisis Penjualan Buku Gramedia Purwakarta – Kolaborasi UPI Purwakarta</title>
     <meta name="description"
-        content="Website ringkas untuk mempresentasikan analisis penjualan buku Gramedia Purwakarta: latar belakang, pertanyaan bisnis, visualisasi, kesimpulan, dan rekomendasi kolaborasi UPI." />
+        content="Website ringkas untuk mempresentasikan analisis penjualan Gramedia Purwakarta dengan kesimpulan otomatis dan rekomendasi kolaborasi UPI Purwakarta." />
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -111,7 +113,39 @@
             text-decoration: none
         }
 
-        /* Hero */
+        /* 📱 Mobile: sembunyikan tombol navigasi, sisakan logo + judul */
+        @media (max-width: 640px) {
+            .nav {
+                padding: 10px 14px;
+            }
+
+            .nav .brand .dot {
+                width: 8px;
+                height: 8px;
+            }
+
+            .nav .brand span {
+                font-size: 14px;
+                font-weight: 700;
+            }
+
+            .nav .row {
+                display: none;
+            }
+
+            /* nav links disembunyikan */
+        }
+
+        /* 📲 Tablet kecil: perkecil tombol navigasi */
+        @media (min-width: 641px) and (max-width: 880px) {
+            .nav a.btn {
+                padding: 6px 10px;
+                font-size: 13px;
+                border-radius: 10px;
+            }
+        }
+
+        /* Hero & layout */
         .hero {
             max-width: 1100px;
             margin: 24px auto 8px;
@@ -147,7 +181,6 @@
             background: linear-gradient(180deg, rgba(255, 255, 255, .02), rgba(0, 0, 0, .03))
         }
 
-        /* Layout */
         .container {
             max-width: 1100px;
             margin: 8px auto 60px;
@@ -273,6 +306,40 @@
             font-weight: 700
         }
 
+        /* Upload panel */
+        .upload {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-top: 8px
+        }
+
+        .upload .btn {
+            cursor: pointer
+        }
+
+        .help {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 6px
+        }
+
+        .mini {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        .ok {
+            color: var(--accent);
+            font-weight: 600
+        }
+
+        .warn {
+            color: #f0a500;
+            font-weight: 600
+        }
+
         /* Table (UPI) */
         .table-wrap {
             overflow-x: auto;
@@ -307,38 +374,6 @@
         .tbl tr:hover td {
             background: rgba(255, 255, 255, .02)
         }
-
-        /* 📱 Mobile: sembunyikan tombol navigasi, sisakan logo + judul */
-        @media (max-width: 640px) {
-            .nav {
-                padding: 10px 14px;
-            }
-
-            .nav .brand .dot {
-                width: 8px;
-                height: 8px;
-            }
-
-            .nav .brand span {
-                font-size: 14px;
-                font-weight: 700;
-            }
-
-            .nav .row {
-                display: none;
-            }
-
-            /* << nav links disembunyikan */
-        }
-
-        /* 📲 Tablet kecil: perkecil tombol navigasi agar tidak makan tempat */
-        @media (min-width: 641px) and (max-width: 880px) {
-            .nav a.btn {
-                padding: 6px 10px;
-                font-size: 13px;
-                border-radius: 10px;
-            }
-        }
     </style>
 </head>
 
@@ -347,27 +382,46 @@
     <header class="header">
         <nav class="nav">
             <div class="brand">
-                <div class="dot" aria-hidden="true"></div>
-                <span>Analisis Penjualan Gramedia Purwakarta</span>
+                <div class="dot" aria-hidden="true"></div><span>Analisis Penjualan Gramedia Purwakarta</span>
             </div>
             <div class="row">
                 <a class="btn" href="#latar">Latar Belakang</a>
-                <a class="btn" href="#pb">Pertanyaan Bisnis</a>
+                <a class="btn" href="#pb">PB Umum</a>
+                <a class="btn" href="#pb-upi">PB UPI</a>
                 <a class="btn" href="#kesimpulan">Kesimpulan</a>
                 <a class="btn" href="#upi">UPI</a>
             </div>
         </nav>
-
     </header>
 
     <!-- Hero -->
     <section class="hero">
         <div>
             <h1>Analisis Penjualan Buku – Perspektif Kolaborasi UPI Purwakarta</h1>
-            <p class="muted">Ringkasan visual hasil pengolahan data dari notebook analisis.</p>
+            <p class="muted">Ringkasan visual hasil notebook analisis.</p>
             <div class="tags">
                 <span class="tag">Retail Books</span><span class="tag">Gramedia Purwakarta</span><span class="tag">UPI
                     Purwakarta</span><span class="tag">Business Insight</span>
+            </div>
+            <!-- Upload Panel -->
+            <div class="upload">
+                <input id="fileInput" type="file" multiple accept=".json,.csv" />
+                <button id="btnUseSample" class="btn"
+                    style="border:1px solid var(--border);border-radius:10px;padding:8px 12px;background:transparent">Gunakan
+                    Data Contoh</button>
+                <span id="uploadStatus" class="mini">Unggah satu berkas JSON (berbentuk <code>DATA</code>) atau beberapa
+                    CSV: <em>kategori.csv</em>, <em>bulanan.csv</em>, <em>topItem.csv</em>, <em>penerbit.csv</em>,
+                    <em>weekday.csv</em>, <em>priceBands.csv</em>, <em>bulananPromo.csv</em>.</span>
+            </div>
+            <div class="help">
+                <b>Format CSV:</b> header wajib sesuai dataset.<br>
+                <code>kategori: nama, penjualan</code> ·
+                <code>bulanan: bulan(YYYY-MM), penjualan</code> ·
+                <code>topItem: label, penjualan</code> ·
+                <code>penerbit: nama, penjualan</code> ·
+                <code>weekday: hari(Sen..Min), penjualan</code> ·
+                <code>priceBands: band, penjualan</code> ·
+                <code>bulananPromo: bulan(YYYY-MM), promo, nonpromo</code>
             </div>
         </div>
     </section>
@@ -387,23 +441,21 @@
                     bestseller, price band favorit, hingga dampak promosi dapat langsung diterjemahkan menjadi program
                     bersama <i>Prodi</i> (mis. PSTI), <i>Himpunan/BEM/UKM</i>, <i>Perpustakaan UPI</i>, dan unit
                     pendukung (kemitraan,
-                    karier, riset). Contohnya: kurasi “Pojok Bacaan Prodi”, kuliah tamu penulis dan bedah buku, paket
-                    bundling harga ramah mahasiswa, keanggotaan/loyalty kampus, serta proyek magang/riset analitik
-                    data ritel yang memperkaya capaian pembelajaran.
+                    karier, riset). Contohnya: kurasi “Pojok Bacaan Prodi”, kuliah tamu penulis & bedah buku, paket
+                    bundling harga ramah mahasiswa, keanggotaan/loyalty kampus, serta proyek magang/riset analitik.
                 </p>
                 <div class="tags" aria-label="contoh peluang">
                     <span class="tag">Pojok Bacaan Prodi</span>
                     <span class="tag">Kuliah Tamu Penulis</span>
-                    <span class="tag">Bundling Harga Mahasiswa</span>
-                    <span class="tag">Keanggotaan Kampus</span>
+                    <span class="tag">Bundling Mahasiswa</span>
+                    <span class="tag">Membership Kampus</span>
                     <span class="tag">Magang/Riset Data</span>
                     <span class="tag">Dashboard Bersama</span>
                 </div>
             </div>
         </section>
 
-
-        <!-- PERTANYAAN BISNIS -->
+        <!-- PB UMUM -->
         <section id="pb" class="section">
             <h2><span class="bar"></span>Pertanyaan Bisnis & Visualisasi</h2>
             <div class="grid">
@@ -533,17 +585,96 @@
             </div>
         </section>
 
-        <!-- KESIMPULAN -->
+        <!-- PB UPI: KHUSUS UPI PURWAKARTA -->
+        <section id="pb-upi" class="section">
+            <h2><span class="bar"></span>Pertanyaan Bisnis UPI Purwakarta</h2>
+            <div class="grid">
+                <!-- UPI-Q1 -->
+                <article class="card q-card" id="upi-q1">
+                    <header>
+                        <div>
+                            <h3 class="q-title">UPI-Q1 – Kapan waktu terbaik aktivasi kampus?</h3>
+                            <p class="q-desc">Share promo per bulan (%) untuk sinkronisasi agenda kampus.</p>
+                            <div class="q-meta"><span class="pill">Line</span><span class="pill">Promo/Total (%)</span>
+                            </div>
+                        </div>
+                    </header>
+                    <div class="chart-box"><canvas id="chartUPIPromoShare" aria-label="Share promo per bulan"></canvas>
+                    </div>
+                    <div class="insight">
+                        <div class="muted">Kesimpulan singkat:</div>
+                        <div id="insUPIPromo"><em>Menunggu data…</em></div>
+                    </div>
+                </article>
+
+                <!-- UPI-Q2 -->
+                <article class="card q-card" id="upi-q2">
+                    <header>
+                        <div>
+                            <h3 class="q-title">UPI-Q2 – Seberapa besar proporsi harga ramah mahasiswa?</h3>
+                            <p class="q-desc">Perbandingan penjualan price band ≤100rb vs lainnya.</p>
+                            <div class="q-meta"><span class="pill">Donut</span><span class="pill">≤100rb vs
+                                    >100rb</span></div>
+                        </div>
+                    </header>
+                    <div class="chart-box"><canvas id="chartUPIAfford" aria-label="Affordability price band"></canvas>
+                    </div>
+                    <div class="insight">
+                        <div class="muted">Kesimpulan singkat:</div>
+                        <div id="insUPIAfford"><em>Menunggu data…</em></div>
+                    </div>
+                </article>
+
+                <!-- UPI-Q3 -->
+                <article class="card q-card" id="upi-q3">
+                    <header>
+                        <div>
+                            <h3 class="q-title">UPI-Q3 – Judul apa yang paling cocok untuk event kampus?</h3>
+                            <p class="q-desc">Top 5 judul sebagai kandidat bedah buku / meet-the-author.</p>
+                            <div class="q-meta"><span class="pill">Horizontal Bar</span><span class="pill">Top 5</span>
+                            </div>
+                        </div>
+                    </header>
+                    <div class="chart-box"><canvas id="chartUPITopTitles" aria-label="Top 5 judul kampus"></canvas>
+                    </div>
+                    <div class="insight">
+                        <div class="muted">Kesimpulan singkat:</div>
+                        <div id="insUPITop"><em>Menunggu data…</em></div>
+                    </div>
+                </article>
+
+                <!-- UPI-Q4 -->
+                <article class="card q-card" id="upi-q4">
+                    <header>
+                        <div>
+                            <h3 class="q-title">UPI-Q4 – Penerbit mana yang paling prioritas untuk kemitraan?</h3>
+                            <p class="q-desc">Top 5 penerbit untuk program kolaborasi kampus.</p>
+                            <div class="q-meta"><span class="pill">Horizontal Bar</span><span class="pill">Top 5</span>
+                            </div>
+                        </div>
+                    </header>
+                    <div class="chart-box"><canvas id="chartUPIPublishers" aria-label="Top penerbit kemitraan"></canvas>
+                    </div>
+                    <div class="insight">
+                        <div class="muted">Kesimpulan singkat:</div>
+                        <div id="insUPIPub"><em>Menunggu data…</em></div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- KESIMPULAN OTOMATIS -->
         <section id="kesimpulan" class="section">
-            <h2><span class="bar"></span>Kesimpulan Visualisasi Data</h2>
+            <h2><span class="bar"></span>Kesimpulan Otomatis</h2>
             <div class="card" id="kesimpulanAkhir">
-                <p class="muted">Ringkasan otomatis dari seluruh visualisasi (berbasis DATA).</p>
+                <p class="muted">Ringkasan otomatis dari seluruh visualisasi (berbasis data terkini).</p>
                 <div id="insRingkas"><em>Ringkasan akan terisi berdasarkan data.</em></div>
             </div>
         </section>
 
+        <!-- UPI: KESIMPULAN FINAL + TABEL REKOMENDASI -->
         <section id="upi" class="section">
-            <h2><span class="bar"></span>Kesimpulan Rekomendasi Kerjasama - UPI Purwakarta</h2>
+            <h2><span class="bar"></span>Kesimpulan UPI Purwakarta (Final)</h2>
             <div class="card">
                 <p id="upiConclusion" class="muted"><em>Menunggu ringkasan berbasis data…</em></p>
                 <div class="table-wrap">
@@ -569,10 +700,9 @@
 
     <script>
         /* ============================================================
-           💾 GANTI DATA DI SINI SESUAI OUTPUT NOTEBOOK ANDA
+           DATA: contoh default (bisa ditimpa hasil upload CSV/JSON)
         ============================================================ */
-        const DATA = {
-            // PB#1 – kategori
+        let DATA = {
             kategori: [
                 { nama: "Fiksi", penjualan: 1420 },
                 { nama: "Nonfiksi", penjualan: 1230 },
@@ -581,7 +711,6 @@
                 { nama: "Bisnis", penjualan: 760 },
                 { nama: "Agama", penjualan: 640 }
             ],
-            // PB#2 – bulanan
             bulanan: [
                 { bulan: "2025-01", penjualan: 9200 },
                 { bulan: "2025-02", penjualan: 9800 },
@@ -591,23 +720,15 @@
                 { bulan: "2025-06", penjualan: 12300 },
                 { bulan: "2025-07", penjualan: 11800 }
             ],
-            // PB#3 – top judul/penulis
             topItem: [
                 { label: "Judul A", penjualan: 820 },
                 { label: "Judul B", penjualan: 760 },
                 { label: "Judul C", penjualan: 690 },
                 { label: "Judul D", penjualan: 570 },
                 { label: "Judul E", penjualan: 560 },
-                { label: "Judul F", penjualan: 550 },
-                { label: "Judul G", penjualan: 510 },
-                { label: "Judul H", penjualan: 500 },
-                { label: "Judul I", penjualan: 460 },
-                { label: "Judul J", penjualan: 420 },
-                { label: "Judul K", penjualan: 410 }
+                { label: "Judul F", penjualan: 550 }
             ],
             topN: 10,
-
-            // PB#4 – penerbit
             penerbit: [
                 { nama: "Gramedia Pustaka Utama", penjualan: 5400 },
                 { nama: "Mizan", penjualan: 3100 },
@@ -615,8 +736,6 @@
                 { nama: "Bentang", penjualan: 1800 },
                 { nama: "Andi", penjualan: 1200 }
             ],
-
-            // PB#5 – weekday (Sen..Min)
             weekday: [
                 { hari: "Sen", penjualan: 1500 },
                 { hari: "Sel", penjualan: 1600 },
@@ -626,8 +745,6 @@
                 { hari: "Sab", penjualan: 2600 },
                 { hari: "Min", penjualan: 2300 }
             ],
-
-            // PB#6 – price band
             priceBands: [
                 { band: "<50rb", penjualan: 2200 },
                 { band: "50–99rb", penjualan: 4100 },
@@ -635,8 +752,6 @@
                 { band: "150–199rb", penjualan: 900 },
                 { band: "≥200rb", penjualan: 350 }
             ],
-
-            // PB#7 – promo vs non-promo per bulan
             bulananPromo: [
                 { bulan: "2025-01", promo: 1800, nonpromo: 7400 },
                 { bulan: "2025-02", promo: 2100, nonpromo: 7700 },
@@ -657,89 +772,390 @@
         const sum = (arr, key) => arr.reduce((s, d) => s + (key ? d[key] : d), 0);
         const pct = (a, b) => b ? (a / b * 100) : 0;
 
+        /* ===================== CSV/JSON Upload Logic ===================== */
+        const fileInput = document.getElementById('fileInput');
+        const btnUseSample = document.getElementById('btnUseSample');
+        const uploadStatus = document.getElementById('uploadStatus');
+
+        const datasetNameMap = (name) => {
+            const key = (name || '').toLowerCase().replace(/\.(csv|json)$/, '').replace(/[^a-z]/g, '');
+            const map = {
+                kategori: 'kategori', category: 'kategori', categories: 'kategori',
+                bulanan: 'bulanan', monthly: 'bulanan',
+                topitem: 'topItem', top: 'topItem',
+                penerbit: 'penerbit', publisher: 'penerbit', publishers: 'penerbit',
+                weekday: 'weekday', harian: 'weekday', hari: 'weekday',
+                pricebands: 'priceBands', priceband: 'priceBands', band: 'priceBands',
+                bulananpromo: 'bulananPromo', promobulanan: 'bulananPromo', promo: 'bulananPromo'
+            };
+            return map[key] || null;
+        };
+
+        function splitCSVRow(row) {
+            // Split CSV row by commas while respecting quotes
+            const out = [];
+            let cur = '', inQ = false;
+            for (let i = 0; i < row.length; i++) {
+                const ch = row[i];
+                if (ch === '"') {
+                    if (inQ && row[i + 1] === '"') { cur += '"'; i++; } // escaped quote
+                    else inQ = !inQ;
+                } else if (ch === ',' && !inQ) {
+                    out.push(cur.trim()); cur = '';
+                } else {
+                    cur += ch;
+                }
+            }
+            out.push(cur.trim());
+            return out;
+        }
+
+        function parseCSV(text) {
+            const lines = text.replace(/\r/g, '').split('\n').filter(l => l.trim().length > 0);
+            if (!lines.length) return [];
+            const header = splitCSVRow(lines[0]).map(h => h.trim());
+            const rows = [];
+            for (let i = 1; i < lines.length; i++) {
+                const cols = splitCSVRow(lines[i]);
+                const obj = {};
+                header.forEach((h, idx) => { obj[h] = (cols[idx] ?? '').trim(); });
+                rows.push(obj);
+            }
+            return rows;
+        }
+
+        function coerceNumbers(arr, numericKeys) {
+            arr.forEach(o => {
+                (numericKeys || []).forEach(k => {
+                    if (o[k] !== undefined && o[k] !== null && o[k] !== '') {
+                        const num = Number(o[k]);
+                        o[k] = isNaN(num) ? 0 : num;
+                    }
+                });
+            });
+            return arr;
+        }
+
+        function setDATAFromCSV(name, rows) {
+            const ds = datasetNameMap(name);
+            if (!ds) { return { ok: false, msg: `Nama berkas tidak dikenali: ${name}` }; }
+
+            // Map headers -> expected shapes
+            const lowHeaders = rows.length ? Object.keys(rows[0]).map(h => h.toLowerCase()) : [];
+            const normRows = rows.map(r => {
+                const o = {};
+                Object.keys(r).forEach(k => o[k.toLowerCase()] = r[k]);
+                return o;
+            });
+
+            if (ds === 'kategori') { // nama, penjualan
+                DATA.kategori = coerceNumbers(normRows.map(r => ({ nama: r.nama, penjualan: r.penjualan })), ['penjualan']);
+                return { ok: true, msg: `Memuat ${rows.length} baris ke DATA.kategori` };
+            }
+            if (ds === 'bulanan') { // bulan, penjualan
+                DATA.bulanan = coerceNumbers(normRows.map(r => ({ bulan: r.bulan, penjualan: r.penjualan })), ['penjualan']);
+                return { ok: true, msg: `Memuat ${rows.length} baris ke DATA.bulanan` };
+            }
+            if (ds === 'topItem') { // label, penjualan
+                DATA.topItem = coerceNumbers(normRows.map(r => ({ label: r.label, penjualan: r.penjualan })), ['penjualan']);
+                return { ok: true, msg: `Memuat ${rows.length} baris ke DATA.topItem` };
+            }
+            if (ds === 'penerbit') { // nama, penjualan
+                DATA.penerbit = coerceNumbers(normRows.map(r => ({ nama: r.nama, penjualan: r.penjualan })), ['penjualan']);
+                return { ok: true, msg: `Memuat ${rows.length} baris ke DATA.penerbit` };
+            }
+            if (ds === 'weekday') { // hari, penjualan
+                DATA.weekday = coerceNumbers(normRows.map(r => ({ hari: r.hari, penjualan: r.penjualan })), ['penjualan']);
+                return { ok: true, msg: `Memuat ${rows.length} baris ke DATA.weekday` };
+            }
+            if (ds === 'priceBands') { // band, penjualan
+                DATA.priceBands = coerceNumbers(normRows.map(r => ({ band: r.band, penjualan: r.penjualan })), ['penjualan']);
+                return { ok: true, msg: `Memuat ${rows.length} baris ke DATA.priceBands` };
+            }
+            if (ds === 'bulananPromo') { // bulan, promo, nonpromo
+                DATA.bulananPromo = coerceNumbers(normRows.map(r => ({ bulan: r.bulan, promo: r.promo, nonpromo: r.nonpromo })), ['promo', 'nonpromo']);
+                return { ok: true, msg: `Memuat ${rows.length} baris ke DATA.bulananPromo` };
+            }
+            return { ok: false, msg: `Dataset tidak didukung: ${ds}` };
+        }
+
+        function mergeDATAFromJSON(obj) {
+            // Terima objek full (punya banyak key) atau array satu dataset
+            if (Array.isArray(obj)) {
+                // coba deteksi bentuk array
+                if (obj[0] && 'nama' in obj[0] && 'penjualan' in obj[0]) DATA.kategori = coerceNumbers(obj, ['penjualan']);
+                else if (obj[0] && 'bulan' in obj[0] && 'penjualan' in obj[0]) DATA.bulanan = coerceNumbers(obj, ['penjualan']);
+                else if (obj[0] && 'label' in obj[0] && 'penjualan' in obj[0]) DATA.topItem = coerceNumbers(obj, ['penjualan']);
+                else if (obj[0] && 'bulan' in obj[0] && ('promo' in obj[0] || 'nonpromo' in obj[0])) DATA.bulananPromo = coerceNumbers(obj, ['promo', 'nonpromo']);
+                else if (obj[0] && 'band' in obj[0] && 'penjualan' in obj[0]) DATA.priceBands = coerceNumbers(obj, ['penjualan']);
+                else if (obj[0] && 'hari' in obj[0] && 'penjualan' in obj[0]) DATA.weekday = coerceNumbers(obj, ['penjualan']);
+            } else {
+                const keys = ['kategori', 'bulanan', 'topItem', 'penerbit', 'weekday', 'priceBands', 'bulananPromo', 'topN'];
+                keys.forEach(k => {
+                    if (obj[k] !== undefined) {
+                        if (Array.isArray(obj[k])) {
+                            if (k === 'bulananPromo') coerceNumbers(obj[k], ['promo', 'nonpromo']);
+                            else if (k === 'kategori' || k === 'penerbit' || k === 'topItem' || k === 'weekday' || k === 'priceBands' || k === 'bulanan') coerceNumbers(obj[k], ['penjualan']);
+                        }
+                        DATA[k] = obj[k];
+                    }
+                });
+            }
+        }
+
+        fileInput.addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files || []);
+            if (!files.length) return;
+            let msgs = [];
+            for (const f of files) {
+                const text = await f.text();
+                if (f.name.toLowerCase().endsWith('.json')) {
+                    try {
+                        const obj = JSON.parse(text);
+                        mergeDATAFromJSON(obj);
+                        msgs.push(`<span class="ok">JSON</span> <code>${f.name}</code> dimuat`);
+                    } catch (err) {
+                        msgs.push(`<span class="warn">Gagal JSON</span> <code>${f.name}</code>: ${err.message}`);
+                    }
+                } else if (f.name.toLowerCase().endsWith('.csv')) {
+                    const rows = parseCSV(text);
+                    const res = setDATAFromCSV(f.name, rows);
+                    msgs.push(`${res.ok ? '<span class="ok">CSV</span>' : '<span class="warn">CSV</span>'} <code>${f.name}</code> → ${res.msg}`);
+                } else {
+                    msgs.push(`<span class="warn">Lewati</span> <code>${f.name}</code> (hanya .csv/.json)`);
+                }
+            }
+            uploadStatus.innerHTML = msgs.join(' · ');
+            renderAll();
+        });
+
+        btnUseSample.addEventListener('click', () => {
+            uploadStatus.innerHTML = '<span class="ok">Menggunakan data contoh.</span>';
+            DATA = JSON.parse(JSON.stringify(DATA)); // no-op; sekadar trigger
+            renderAll();
+        });
+
         /* ========================== Charts =========================== */
-        const ctxKategori = document.getElementById('chartKategori').getContext('2d');
-        const ctxBulanan = document.getElementById('chartBulanan').getContext('2d');
-        const ctxTop = document.getElementById('chartTop').getContext('2d');
-        const ctxPenerbit = document.getElementById('chartPenerbit').getContext('2d');
-        const ctxWeekday = document.getElementById('chartWeekday').getContext('2d');
-        const ctxPriceBand = document.getElementById('chartPriceBand').getContext('2d');
-        const ctxPromo = document.getElementById('chartPromo').getContext('2d');
+        let chartKategori, chartBulanan, chartTop, chartPenerbit, chartWeekday, chartPriceBand, chartPromo;
+        let chartUPIPromoShare, chartUPIAfford, chartUPITopTitles, chartUPIPublishers;
 
-        // PB#1 – Kategori
-        const labelsKategori = DATA.kategori.map(d => d.nama);
-        const dataKategori = DATA.kategori.map(d => d.penjualan);
-        const chartKategori = new Chart(ctxKategori, {
-            type: 'bar',
-            data: { labels: labelsKategori, datasets: [{ label: 'Penjualan', data: dataKategori, backgroundColor: makeAlpha(brandHex, .35), borderColor: brandHex, borderWidth: 1.5 }] },
-            options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { callback: v => fmtIDR(v) } } }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmtIDR(ctx.parsed.y)} unit` } } } }
-        });
+        function renderKategori() {
+            const labels = (DATA.kategori || []).map(d => d.nama);
+            const values = (DATA.kategori || []).map(d => +d.penjualan || 0);
+            if (!chartKategori) {
+                const ctx = document.getElementById('chartKategori').getContext('2d');
+                chartKategori = new Chart(ctx, {
+                    type: 'bar',
+                    data: { labels, datasets: [{ label: 'Penjualan', data: values, backgroundColor: makeAlpha(brandHex, .35), borderColor: brandHex, borderWidth: 1.5 }] },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { callback: v => fmtIDR(v) } } }, plugins: { legend: { display: false } } }
+                });
+            } else {
+                chartKategori.data.labels = labels; chartKategori.data.datasets[0].data = values; chartKategori.update();
+            }
+            document.getElementById('insKategori').innerHTML = insightKategori(DATA.kategori);
+        }
 
-        // PB#2 – Bulanan (area)
-        const labelsBulanan = DATA.bulanan.map(d => bulanID(d.bulan));
-        const dataBulanan = DATA.bulanan.map(d => d.penjualan);
-        const gradient = ctxBulanan.createLinearGradient(0, 0, 0, 320); gradient.addColorStop(0, makeAlpha(accentHex, .35)); gradient.addColorStop(1, makeAlpha(accentHex, .02));
-        const chartBulanan = new Chart(ctxBulanan, {
-            type: 'line',
-            data: { labels: labelsBulanan, datasets: [{ label: 'Penjualan Bulanan', data: dataBulanan, fill: true, backgroundColor: gradient, borderColor: accentHex, borderWidth: 2, tension: .28, pointRadius: 3, pointHoverRadius: 5 }] },
-            options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { beginAtZero: false, ticks: { callback: v => fmtIDR(v) } } }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmtIDR(ctx.parsed.y)} unit` } } } }
-        });
+        function renderBulanan() {
+            const labels = (DATA.bulanan || []).map(d => bulanID(d.bulan));
+            const values = (DATA.bulanan || []).map(d => +d.penjualan || 0);
+            if (!chartBulanan) {
+                const ctx = document.getElementById('chartBulanan').getContext('2d');
+                const grad = ctx.createLinearGradient(0, 0, 0, 320); grad.addColorStop(0, makeAlpha(accentHex, .35)); grad.addColorStop(1, makeAlpha(accentHex, .02));
+                chartBulanan = new Chart(ctx, {
+                    type: 'line',
+                    data: { labels, datasets: [{ label: 'Penjualan Bulanan', data: values, fill: true, backgroundColor: grad, borderColor: accentHex, borderWidth: 2, tension: .28, pointRadius: 3, pointHoverRadius: 5 }] },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { beginAtZero: false, ticks: { callback: v => fmtIDR(v) } } }, plugins: { legend: { display: false } } }
+                });
+            } else {
+                chartBulanan.data.labels = labels; chartBulanan.data.datasets[0].data = values; chartBulanan.update();
+            }
+            document.getElementById('insBulanan').innerHTML = insightBulanan(DATA.bulanan);
+        }
 
-        // PB#3 – Top judul/penulis (Horizontal)
-        const sortedTop = [...DATA.topItem].sort((a, b) => b.penjualan - a.penjualan).slice(0, DATA.topN || 10);
-        const labelsTop = sortedTop.map(d => d.label);
-        const dataTop = sortedTop.map(d => d.penjualan);
-        const chartTop = new Chart(ctxTop, {
-            type: 'bar',
-            data: { labels: labelsTop, datasets: [{ label: 'Penjualan', data: dataTop, backgroundColor: makeAlpha(brandHex, .28), borderColor: brandHex, borderWidth: 1.2 }] },
-            options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, scales: { x: { ticks: { callback: v => fmtIDR(v) } }, y: { grid: { display: false } } }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmtIDR(ctx.parsed.x)} unit` } } } }
-        });
+        function renderTop() {
+            const sortedTop = [...(DATA.topItem || [])].sort((a, b) => b.penjualan - a.penjualan).slice(0, DATA.topN || 10);
+            const labels = sortedTop.map(d => d.label);
+            const values = sortedTop.map(d => +d.penjualan || 0);
+            if (!chartTop) {
+                const ctx = document.getElementById('chartTop').getContext('2d');
+                chartTop = new Chart(ctx, {
+                    type: 'bar',
+                    data: { labels, datasets: [{ label: 'Penjualan', data: values, backgroundColor: makeAlpha(brandHex, .28), borderColor: brandHex, borderWidth: 1.2 }] },
+                    options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, scales: { x: { ticks: { callback: v => fmtIDR(v) } }, y: { grid: { display: false } } }, plugins: { legend: { display: false } } }
+                });
+            } else {
+                chartTop.data.labels = labels; chartTop.data.datasets[0].data = values; chartTop.update();
+            }
+            document.getElementById('insTop').innerHTML = insightTop(DATA.topItem, 3);
+        }
 
-        // PB#4 – Donut penerbit
-        const labelsPenerbit = DATA.penerbit.map(d => d.nama);
-        const dataPenerbit = DATA.penerbit.map(d => d.penjualan);
-        const donutColors = labelsPenerbit.map((_, i) => i % 2 === 0 ? makeAlpha(brandHex, .45) : makeAlpha(accentHex, .45));
-        const donutBorders = labelsPenerbit.map((_, i) => i % 2 === 0 ? brandHex : accentHex);
-        const chartPenerbit = new Chart(ctxPenerbit, {
-            type: 'doughnut',
-            data: { labels: labelsPenerbit, datasets: [{ data: dataPenerbit, backgroundColor: donutColors, borderColor: donutBorders, borderWidth: 1.2, hoverOffset: 4 }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' }, tooltip: { callbacks: { label: c => ` ${c.label}: ${fmtIDR(c.parsed)} unit` } } } }
-        });
+        function renderPenerbit() {
+            const labels = (DATA.penerbit || []).map(d => d.nama);
+            const values = (DATA.penerbit || []).map(d => +d.penjualan || 0);
+            const colors = labels.map((_, i) => i % 2 === 0 ? makeAlpha(brandHex, .45) : makeAlpha(accentHex, .45));
+            const borders = labels.map((_, i) => i % 2 === 0 ? brandHex : accentHex);
+            if (!chartPenerbit) {
+                const ctx = document.getElementById('chartPenerbit').getContext('2d');
+                chartPenerbit = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderColor: borders, borderWidth: 1.2, hoverOffset: 4 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                });
+            } else {
+                chartPenerbit.data.labels = labels; chartPenerbit.data.datasets[0].data = values; chartPenerbit.update();
+            }
+            document.getElementById('insPenerbit').innerHTML = insightPenerbit(DATA.penerbit);
+        }
 
-        // PB#5 – Weekday
-        const orderWeek = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
-        const weekdaySorted = [...DATA.weekday].sort((a, b) => orderWeek.indexOf(a.hari) - orderWeek.indexOf(b.hari));
-        const labelsWeekday = weekdaySorted.map(d => d.hari);
-        const dataWeekday = weekdaySorted.map(d => d.penjualan);
-        const chartWeekday = new Chart(ctxWeekday, {
-            type: 'bar',
-            data: { labels: labelsWeekday, datasets: [{ label: 'Penjualan', data: dataWeekday, backgroundColor: makeAlpha(brandHex, .35), borderColor: brandHex, borderWidth: 1.5 }] },
-            options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { callback: v => fmtIDR(v) } } }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ` ${fmtIDR(c.parsed.y)} unit` } } } }
-        });
+        function renderWeekday() {
+            const orderWeek = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
+            const wd = [...(DATA.weekday || [])].sort((a, b) => orderWeek.indexOf(a.hari) - orderWeek.indexOf(b.hari));
+            const labels = wd.map(d => d.hari);
+            const values = wd.map(d => +d.penjualan || 0);
+            if (!chartWeekday) {
+                const ctx = document.getElementById('chartWeekday').getContext('2d');
+                chartWeekday = new Chart(ctx, {
+                    type: 'bar',
+                    data: { labels, datasets: [{ label: 'Penjualan', data: values, backgroundColor: makeAlpha(brandHex, .35), borderColor: brandHex, borderWidth: 1.5 }] },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { callback: v => fmtIDR(v) } } }, plugins: { legend: { display: false } } }
+                });
+            } else {
+                chartWeekday.data.labels = labels; chartWeekday.data.datasets[0].data = values; chartWeekday.update();
+            }
+            document.getElementById('insWeekday').innerHTML = insightWeekday(DATA.weekday);
+        }
 
-        // PB#6 – Price band
-        const labelsPB = DATA.priceBands.map(d => d.band);
-        const dataPB = DATA.priceBands.map(d => d.penjualan);
-        const chartPriceBand = new Chart(ctxPriceBand, {
-            type: 'bar',
-            data: { labels: labelsPB, datasets: [{ label: 'Penjualan', data: dataPB, backgroundColor: makeAlpha(accentHex, .35), borderColor: accentHex, borderWidth: 1.5 }] },
-            options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { callback: v => fmtIDR(v) } } }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ` ${fmtIDR(c.parsed.y)} unit` } } } }
-        });
+        function renderPriceBand() {
+            const labels = (DATA.priceBands || []).map(d => d.band);
+            const values = (DATA.priceBands || []).map(d => +d.penjualan || 0);
+            if (!chartPriceBand) {
+                const ctx = document.getElementById('chartPriceBand').getContext('2d');
+                chartPriceBand = new Chart(ctx, {
+                    type: 'bar',
+                    data: { labels, datasets: [{ label: 'Penjualan', data: values, backgroundColor: makeAlpha(accentHex, .35), borderColor: accentHex, borderWidth: 1.5 }] },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { callback: v => fmtIDR(v) } } }, plugins: { legend: { display: false } } }
+                });
+            } else {
+                chartPriceBand.data.labels = labels; chartPriceBand.data.datasets[0].data = values; chartPriceBand.update();
+            }
+            document.getElementById('insPriceBand').innerHTML = insightPriceBand(DATA.priceBands);
+        }
 
-        // PB#7 – Promo vs Non-promo (Grouped)
-        const labelsPromo = DATA.bulananPromo.map(d => bulanID(d.bulan));
-        const dataPromo = DATA.bulananPromo.map(d => d.promo);
-        const dataNon = DATA.bulananPromo.map(d => d.nonpromo);
-        const chartPromo = new Chart(ctxPromo, {
-            type: 'bar',
-            data: {
-                labels: labelsPromo, datasets: [
-                    { label: 'Promo', data: dataPromo, backgroundColor: makeAlpha(brandHex, .4), borderColor: brandHex, borderWidth: 1.2 },
-                    { label: 'Non-promo', data: dataNon, backgroundColor: makeAlpha(accentHex, .35), borderColor: accentHex, borderWidth: 1.2 }
-                ]
-            },
-            options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: false }, y: { beginAtZero: true, ticks: { callback: v => fmtIDR(v) } } }, plugins: { legend: { position: 'bottom' }, tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${fmtIDR(c.parsed.y)} unit` } } } }
-        });
+        function renderPromo() {
+            const labels = (DATA.bulananPromo || []).map(d => bulanID(d.bulan));
+            const promo = (DATA.bulananPromo || []).map(d => +d.promo || 0);
+            const non = (DATA.bulananPromo || []).map(d => +d.nonpromo || 0);
+            if (!chartPromo) {
+                const ctx = document.getElementById('chartPromo').getContext('2d');
+                chartPromo = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels, datasets: [
+                            { label: 'Promo', data: promo, backgroundColor: makeAlpha(brandHex, .4), borderColor: brandHex, borderWidth: 1.2 },
+                            { label: 'Non-promo', data: non, backgroundColor: makeAlpha(accentHex, .35), borderColor: accentHex, borderWidth: 1.2 }
+                        ]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: false }, y: { beginAtZero: true, ticks: { callback: v => fmtIDR(v) } } }, plugins: { legend: { position: 'bottom' } } }
+                });
+            } else {
+                chartPromo.data.labels = labels;
+                chartPromo.data.datasets[0].data = promo;
+                chartPromo.data.datasets[1].data = non;
+                chartPromo.update();
+            }
+            document.getElementById('insPromo').innerHTML = insightPromo(DATA.bulananPromo);
+        }
+
+        // ====== PB UPI render ======
+        const AFFORD_MAX = 100_000;
+        function parseBandRange(label) {
+            const clean = (label || '').toLowerCase().replace(/\s/g, '');
+            const num = s => Number(s.replace(/[^\d]/g, '')) * 1000; // "50rb" -> 50000
+            if (/^</.test(clean)) { const n = num(clean); return { min: 0, max: n }; }
+            if (/^≤/.test(clean) || /^<=/.test(clean)) { const n = num(clean); return { min: 0, max: n }; }
+            if (/^≥/.test(clean) || /^>=/.test(clean)) { const n = num(clean); return { min: n, max: Infinity }; }
+            const m = clean.match(/(\d+)\D+(\d+)/); if (m) return { min: Number(m[1]) * 1000, max: Number(m[2]) * 1000 };
+            const n = num(clean); return { min: 0, max: n };
+        }
+
+        function renderUPIPromoShare() {
+            const labels = (DATA.bulananPromo || []).map(d => bulanID(d.bulan));
+            const share = (DATA.bulananPromo || []).map(d => {
+                const t = (+d.promo || 0) + (+d.nonpromo || 0); return t ? +((+d.promo) / t * 100).toFixed(1) : 0;
+            });
+            if (!chartUPIPromoShare) {
+                const ctx = document.getElementById('chartUPIPromoShare').getContext('2d');
+                chartUPIPromoShare = new Chart(ctx, {
+                    type: 'line',
+                    data: { labels, datasets: [{ label: 'Share Promo (%)', data: share, fill: true, backgroundColor: makeAlpha(brandHex, .25), borderColor: brandHex, borderWidth: 2, tension: .28, pointRadius: 3, pointHoverRadius: 5 }] },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100, ticks: { callback: v => `${v}%` } }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
+                });
+            } else {
+                chartUPIPromoShare.data.labels = labels; chartUPIPromoShare.data.datasets[0].data = share; chartUPIPromoShare.update();
+            }
+            if (share.length) {
+                const idx = share.reduce((mi, v, i) => v > (share[mi] ?? -1) ? i : mi, 0);
+                document.getElementById('insUPIPromo').innerHTML = `Bulan terbaik aktivasi: <b>${labels[idx]}</b> (share promo ${share[idx]}%).`;
+            } else {
+                document.getElementById('insUPIPromo').textContent = 'Data promo kosong.';
+            }
+        }
+
+        function renderUPIAfford() {
+            let affordable = 0, nonaff = 0;
+            (DATA.priceBands || []).forEach(b => {
+                const r = parseBandRange(b.band || '');
+                const mid = (r.max === Infinity) ? r.min * 1.25 : (r.min + r.max) / 2;
+                if (mid <= AFFORD_MAX) affordable += (+b.penjualan || 0); else nonaff += (+b.penjualan || 0);
+            });
+            const ctx = document.getElementById('chartUPIAfford').getContext('2d');
+            const data = [affordable, nonaff];
+            if (!chartUPIAfford) {
+                chartUPIAfford = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: { labels: ['≤100rb', '>100rb'], datasets: [{ data, backgroundColor: [makeAlpha(accentHex, .45), makeAlpha(brandHex, .45)], borderColor: [accentHex, brandHex], borderWidth: 1.2, hoverOffset: 4 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                });
+            } else {
+                chartUPIAfford.data.datasets[0].data = data; chartUPIAfford.update();
+            }
+            const total = affordable + nonaff;
+            document.getElementById('insUPIAfford').innerHTML = total ? `Proporsi <b>≤100rb</b> ~<b>${(affordable / total * 100).toFixed(1)}%</b> (≈${fmtIDR(affordable)} unit).` : 'Data price band kosong.';
+        }
+
+        function renderUPITopTitles() {
+            const top5 = [...(DATA.topItem || [])].sort((a, b) => b.penjualan - a.penjualan).slice(0, 5);
+            const labels = top5.map(d => d.label);
+            const values = top5.map(d => +d.penjualan || 0);
+            const ctx = document.getElementById('chartUPITopTitles').getContext('2d');
+            if (!chartUPITopTitles) {
+                chartUPITopTitles = new Chart(ctx, {
+                    type: 'bar',
+                    data: { labels, datasets: [{ label: 'Penjualan', data: values, backgroundColor: makeAlpha(brandHex, .35), borderColor: brandHex, borderWidth: 1.2 }] },
+                    options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, scales: { x: { ticks: { callback: v => fmtIDR(v) } }, y: { grid: { display: false } } }, plugins: { legend: { display: false } } }
+                });
+            } else {
+                chartUPITopTitles.data.labels = labels; chartUPITopTitles.data.datasets[0].data = values; chartUPITopTitles.update();
+            }
+            document.getElementById('insUPITop').innerHTML = top5.length ? `Kandidat event: ${labels.map((s, i) => `${i + 1}) <b>${s}</b>`).join('; ')}.` : 'Data judul kosong.';
+        }
+
+        function renderUPIPublishers() {
+            const top = [...(DATA.penerbit || [])].sort((a, b) => b.penjualan - a.penjualan).slice(0, 5);
+            const labels = top.map(d => d.nama);
+            const values = top.map(d => +d.penjualan || 0);
+            const ctx = document.getElementById('chartUPIPublishers').getContext('2d');
+            if (!chartUPIPublishers) {
+                chartUPIPublishers = new Chart(ctx, {
+                    type: 'bar',
+                    data: { labels, datasets: [{ label: 'Penjualan', data: values, backgroundColor: makeAlpha(accentHex, .35), borderColor: accentHex, borderWidth: 1.2 }] },
+                    options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, scales: { x: { ticks: { callback: v => fmtIDR(v) } }, y: { grid: { display: false } } }, plugins: { legend: { display: false } } }
+                });
+            } else {
+                chartUPIPublishers.data.labels = labels; chartUPIPublishers.data.datasets[0].data = values; chartUPIPublishers.update();
+            }
+            document.getElementById('insUPIPub').innerHTML = top.length ? `Prioritas kemitraan: ${labels.map((s, i) => `${i + 1}) <b>${s}</b>`).join('; ')}.` : 'Data penerbit kosong.';
+        }
 
         /* ===================== Insights Otomatis ===================== */
         function insightKategori(arr) {
@@ -786,7 +1202,6 @@
             const peakP = arr.reduce((a, b) => a.promo > b.promo ? a : b);
             return `Kontribusi <b>promo</b> ~${share}% dari total. Puncak promo di <b>${bulanID(peakP.bulan)}</b> (${fmtIDR(peakP.promo)} unit).`;
         }
-
         function ringkasanAkhir() {
             const plain = s => s.replaceAll(/<[^>]+>/g, '');
             const i1 = plain(insightKategori(DATA.kategori));
@@ -800,7 +1215,7 @@
         <p><b>Inti Temuan:</b> ${i1} ${i2} ${i3} ${i4} ${i5} ${i6} ${i7}</p>
         <p class="muted">
           <span class="kbd">Rekomendasi cepat</span> ·
-          (1) Prioritaskan kategori & penerbit unggul untuk display; 
+          (1) Prioritaskan kategori & penerbit unggul; 
           (2) Selaraskan kampanye dengan bulan & hari tersibuk; 
           (3) Optimalkan bundling pada price band favorit; 
           (4) Jadwalkan promosi saat momentum tertinggi.
@@ -858,7 +1273,6 @@
 
             const topTitles = [...(DATA.topItem || [])].sort((a, b) => b.penjualan - a.penjualan).slice(0, 3).map(d => d.label).join(', ');
 
-            // 1. Kurasi & display kategori unggul
             rows.push({
                 fokus: `Kurasi & Display ${cat ? cat.nama : 'Kategori Teratas'}`,
                 mitra: "Gramedia (Store Manager), Dosen UPI",
@@ -867,8 +1281,6 @@
                 kpi: "Uplift penjualan kategori (+10–20%)",
                 waktu: peakMonth
             });
-
-            // 2. Kolaborasi dengan penerbit dominan
             rows.push({
                 fokus: `Kemitraan Penerbit (${pub ? pub.nama : 'Penerbit Utama'})`,
                 mitra: `${pub ? pub.nama : 'Penerbit Utama'}, Prodi UPI`,
@@ -877,8 +1289,6 @@
                 kpi: "Jumlah event & PO; sell-through",
                 waktu: peakMonth
             });
-
-            // 3. Kalender aktivasi di hari & bulan puncak
             rows.push({
                 fokus: "Aktivasi Kampus di Hari/Bulan Puncak",
                 mitra: "BEM/UKM UPI, Gramedia",
@@ -887,8 +1297,6 @@
                 kpi: "Traffic & konversi harian",
                 waktu: `${weekBest.hari}, ${peakMonth}`
             });
-
-            // 4. Bundling sesuai price band favorit
             rows.push({
                 fokus: `Bundling Rentang Harga (${bandTop.band})`,
                 mitra: "Gramedia, Himpunan Mahasiswa",
@@ -897,8 +1305,6 @@
                 kpi: "Average basket size, attach rate",
                 waktu: "Selama periode akademik"
             });
-
-            // 5. Aktivasi bestseller
             rows.push({
                 fokus: "Program Bestseller & Penulis",
                 mitra: "Penerbit terkait, Komunitas literasi UPI",
@@ -907,8 +1313,6 @@
                 kpi: "Uplift judul top (+20–30%)",
                 waktu: "Sejalan kalender event"
             });
-
-            // 6. Skema promo & anggota kampus
             rows.push({
                 fokus: "Skema Promo & Membership Kampus",
                 mitra: "Gramedia, Kemahasiswaan UPI",
@@ -917,8 +1321,6 @@
                 kpi: "Share promo, repeat rate",
                 waktu: promoAgg.peakMonth
             });
-
-            // 7. Data sharing + magang/riset
             rows.push({
                 fokus: "Data Sharing + Magang/Riset",
                 mitra: "UPI (Prodi terkait), Manajemen Toko",
@@ -931,36 +1333,58 @@
             return rows;
         }
 
-        // Tulis ke halaman
-        document.getElementById('insKategori').innerHTML = insightKategori(DATA.kategori);
-        document.getElementById('insBulanan').innerHTML = insightBulanan(DATA.bulanan);
-        document.getElementById('insTop').innerHTML = insightTop(DATA.topItem, 3);
-        document.getElementById('insPenerbit').innerHTML = insightPenerbit(DATA.penerbit);
-        document.getElementById('insWeekday').innerHTML = insightWeekday(DATA.weekday);
-        document.getElementById('insPriceBand').innerHTML = insightPriceBand(DATA.priceBands);
-        document.getElementById('insPromo').innerHTML = insightPromo(DATA.bulananPromo);
-        document.getElementById('insRingkas').innerHTML = ringkasanAkhir();
+        function renderUPISection() {
+            document.getElementById('upiConclusion').innerHTML = buildUPIConclusion();
+            const tbody = document.getElementById('upiTbody');
+            tbody.innerHTML = '';
+            generateUPIRecommendations().forEach(r => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+          <td><b>${r.fokus}</b></td>
+          <td>${r.mitra}</td>
+          <td>${r.dasar}</td>
+          <td>${r.program}</td>
+          <td>${r.kpi}</td>
+          <td>${r.waktu}</td>
+        `;
+                tbody.appendChild(tr);
+            });
+        }
 
-        // UPI: ringkasan & tabel
-        document.getElementById('upiConclusion').innerHTML = buildUPIConclusion();
-        const tbody = document.getElementById('upiTbody');
-        generateUPIRecommendations().forEach(r => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-        <td><b>${r.fokus}</b></td>
-        <td>${r.mitra}</td>
-        <td>${r.dasar}</td>
-        <td>${r.program}</td>
-        <td>${r.kpi}</td>
-        <td>${r.waktu}</td>
-      `;
-            tbody.appendChild(tr);
-        });
+        function renderAll() {
+            renderKategori();
+            renderBulanan();
+            renderTop();
+            renderPenerbit();
+            renderWeekday();
+            renderPriceBand();
+            renderPromo();
+
+            renderUPIPromoShare();
+            renderUPIAfford();
+            renderUPITopTitles();
+            renderUPIPublishers();
+
+            document.getElementById('insRingkas').innerHTML = ringkasanAkhir();
+            renderUPISection();
+        }
+
+        // Initial render
+        renderAll();
 
         /* =================== Resize Observer (UX) ==================== */
         const ro = new ResizeObserver(() => {
-            chartKategori.resize(); chartBulanan.resize(); chartTop.resize();
-            chartPenerbit.resize(); chartWeekday.resize(); chartPriceBand.resize(); chartPromo.resize();
+            if (chartKategori) chartKategori.resize();
+            if (chartBulanan) chartBulanan.resize();
+            if (chartTop) chartTop.resize();
+            if (chartPenerbit) chartPenerbit.resize();
+            if (chartWeekday) chartWeekday.resize();
+            if (chartPriceBand) chartPriceBand.resize();
+            if (chartPromo) chartPromo.resize();
+            if (chartUPIPromoShare) chartUPIPromoShare.resize();
+            if (chartUPIAfford) chartUPIAfford.resize();
+            if (chartUPITopTitles) chartUPITopTitles.resize();
+            if (chartUPIPublishers) chartUPIPublishers.resize();
         });
         document.querySelectorAll('.chart-box').forEach(el => ro.observe(el));
     </script>
