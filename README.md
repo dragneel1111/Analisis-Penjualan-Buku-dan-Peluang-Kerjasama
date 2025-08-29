@@ -1,6 +1,6 @@
 # Analisis Penjualan Buku Gramedia Purwakarta – Kolaborasi UPI Purwakarta
 
-> **Web siap deploy:** https://analisis-penjualan-buku-gramedia-pu.vercel.app
+> **Interactive Visualization:** https://analisis-penjualan-buku-gramedia-pu.vercel.app
 
 Dokumentasi proyek website satu-halaman (HTML/CSS/JS murni) untuk mempresentasikan hasil **notebook analisis penjualan** Gramedia Purwakarta dan menerjemahkannya menjadi **kesimpulan otomatis** serta **rekomendasi kerja sama** dengan organisasi/lembaga di **UPI Kampus Purwakarta**.
 
