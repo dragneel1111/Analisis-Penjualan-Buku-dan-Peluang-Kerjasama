@@ -2,6 +2,10 @@
 
 Dokumentasi proyek website satu-halaman (HTML/CSS/JS murni) untuk mempresentasikan hasil **notebook analisis penjualan** Gramedia Purwakarta dan menerjemahkannya menjadi **kesimpulan serta rekomendasi kerja sama** dengan organisasi/lembaga di **UPI Kampus Purwakarta**.
 
+> **Penulis:** _Rafli A._
+
+> **Web Statis Siap Deploy:** _https://analisis-penjualan-buku-gramedia-pu.vercel.app_
+
 > **Singkatnya:** buka `index.html` di browser → ganti isi konstanta `DATA` sesuai keluaran notebook → seluruh grafik, insight, kesimpulan otomatis, dan **tabel rekomendasi kolaborasi UPI** akan ter-render.
 
 ---
