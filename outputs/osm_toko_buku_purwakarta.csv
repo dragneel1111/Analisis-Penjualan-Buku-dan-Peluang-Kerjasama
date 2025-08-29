@@ -1,0 +1,3 @@
+osm_id,type,name,shop,brand,addr:street,lat,lon,dist_km_center
+12890386622,node,Gramedia,books,Gramedia,,-6.356228,107.2425488,0.0
+983431207,way,Salemba,books,,,-6.4049067,107.453532,23.9350181114796
