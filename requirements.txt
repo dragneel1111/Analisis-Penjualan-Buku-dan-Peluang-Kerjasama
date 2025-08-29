@@ -1,0 +1,14 @@
+# Core runtime for the Purwakarta analysis notebook
+pandas>=2.2,<3
+numpy>=1.26,<3
+matplotlib>=3.8,<4
+folium>=0.15,<0.20
+requests>=2.31,<3
+
+# Jupyter environment
+ipykernel>=6.29,<7
+jupyterlab>=4.2,<5
+IPython>=8.20,<9
+
+# Optional utilities
+python-dateutil>=2.9,<3

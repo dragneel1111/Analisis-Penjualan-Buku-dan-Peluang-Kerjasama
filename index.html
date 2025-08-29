@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Analisis Penjualan Buku Gramedia Purwakarta – Kolaborasi UPI Purwakarta</title>
+    <meta name="description"
+        content="Website ringkas untuk mempresentasikan analisis penjualan buku Gramedia Purwakarta: latar belakang, pertanyaan bisnis, visualisasi, kesimpulan, dan rekomendasi kolaborasi UPI." />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0e14;
+            --card: #11151d;
+            --muted: #8a93a6;
+            --text: #e9edf6;
+            --brand: #5aa2ff;
+            --accent: #41d3bd;
+            --border: #1b2230;
+            --ring: #2a3245;
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg: #f7f9fc;
+                --card: #ffffff;
+                --muted: #5b657a;
+                --text: #0a0e17;
+                --brand: #2458d9;
+                --accent: #0aa37f;
+                --border: #e6e9f0;
+                --ring: #e7ecf8;
+            }
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            height: 100%
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, system-ui, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.55
+        }
+
+        a {
+            color: var(--brand);
+            text-decoration: none
+        }
+
+        a:hover {
+            text-decoration: underline
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: linear-gradient(180deg, rgba(0, 0, 0, .25), rgba(0, 0, 0, 0)), var(--card);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: saturate(1.1) blur(6px)
+        }
+
+        .nav {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            justify-content: space-between
+        }
+
+        .nav .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700
+        }
+
+        .nav .brand .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--brand), var(--accent))
+        }
+
+        .nav a.btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: transparent
+        }
+
+        .nav a.btn:hover {
+            background: var(--ring);
+            text-decoration: none
+        }
+
+        /* Hero */
+        .hero {
+            max-width: 1100px;
+            margin: 24px auto 8px;
+            padding: 0 18px 8px;
+            display: grid;
+            gap: 18px
+        }
+
+        .hero h1 {
+            font-size: clamp(24px, 5vw, 34px);
+            line-height: 1.15;
+            margin: 6px 0
+        }
+
+        .hero p {
+            color: var(--muted);
+            margin: 0
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px
+        }
+
+        .tag {
+            font-size: 12px;
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            color: var(--muted);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .02), rgba(0, 0, 0, .03))
+        }
+
+        /* Layout */
+        .container {
+            max-width: 1100px;
+            margin: 8px auto 60px;
+            padding: 0 18px
+        }
+
+        .section {
+            margin-top: 22px
+        }
+
+        .section h2 {
+            font-size: clamp(18px, 4vw, 24px);
+            margin: 0 0 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .section h2 .bar {
+            width: 8px;
+            height: 22px;
+            border-radius: 4px;
+            background: linear-gradient(180deg, var(--brand), var(--accent))
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 18px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, .12)
+        }
+
+        .grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))
+        }
+
+        .chart-box {
+            position: relative;
+            width: 100%;
+            height: 320px;
+            border: 1px dashed var(--ring);
+            border-radius: 14px;
+            padding: 8px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, .03), rgba(0, 0, 0, .04))
+        }
+
+        @media (min-width:980px) {
+            .chart-box {
+                height: 360px
+            }
+        }
+
+        .q-card header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 8px
+        }
+
+        .q-title {
+            font-weight: 700;
+            font-size: 18px;
+            margin: 0
+        }
+
+        .q-desc {
+            color: var(--muted);
+            font-size: 14px;
+            margin-top: 6px
+        }
+
+        .q-meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px
+        }
+
+        .pill {
+            font-size: 12px;
+            padding: 5px 9px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--muted)
+        }
+
+        .insight {
+            margin-top: 10px;
+            border-top: 1px dashed var(--border);
+            padding-top: 10px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, .02), rgba(0, 0, 0, .02));
+            border-radius: 10px
+        }
+
+        .insight b {
+            color: var(--accent)
+        }
+
+        .muted {
+            color: var(--muted)
+        }
+
+        footer {
+            color: var(--muted);
+            text-align: center;
+            margin: 34px 0
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center
+        }
+
+        .kbd {
+            font-variant: all-small-caps;
+            letter-spacing: .3px;
+            font-weight: 700
+        }
+
+        /* Table (UPI) */
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 10px;
+            border: 1px solid var(--border);
+            border-radius: 12px
+        }
+
+        table.tbl {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 780px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, .02), rgba(0, 0, 0, .02))
+        }
+
+        .tbl th,
+        .tbl td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top
+        }
+
+        .tbl th {
+            background: var(--card);
+            position: sticky;
+            top: 0;
+            text-align: left;
+            color: var(--muted);
+            font-weight: 600
+        }
+
+        .tbl tr:hover td {
+            background: rgba(255, 255, 255, .02)
+        }
+
+        /* 📱 Mobile: sembunyikan tombol navigasi, sisakan logo + judul */
+        @media (max-width: 640px) {
+            .nav {
+                padding: 10px 14px;
+            }
+
+            .nav .brand .dot {
+                width: 8px;
+                height: 8px;
+            }
+
+            .nav .brand span {
+                font-size: 14px;
+                font-weight: 700;
+            }
+
+            .nav .row {
+                display: none;
+            }
+
+            /* << nav links disembunyikan */
+        }
+
+        /* 📲 Tablet kecil: perkecil tombol navigasi agar tidak makan tempat */
+        @media (min-width: 641px) and (max-width: 880px) {
+            .nav a.btn {
+                padding: 6px 10px;
+                font-size: 13px;
+                border-radius: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="brand">
+                <div class="dot" aria-hidden="true"></div>
+                <span>Analisis Penjualan Gramedia Purwakarta</span>
+            </div>
+            <div class="row">
+                <a class="btn" href="#latar">Latar Belakang</a>
+                <a class="btn" href="#pb">Pertanyaan Bisnis</a>
+                <a class="btn" href="#kesimpulan">Kesimpulan</a>
+                <a class="btn" href="#upi">UPI</a>
+            </div>
+        </nav>
+
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div>
+            <h1>Analisis Penjualan Buku – Perspektif Kolaborasi UPI Purwakarta</h1>
+            <p class="muted">Ringkasan visual hasil pengolahan data dari notebook analisis.</p>
+            <div class="tags">
+                <span class="tag">Retail Books</span><span class="tag">Gramedia Purwakarta</span><span class="tag">UPI
+                    Purwakarta</span><span class="tag">Business Insight</span>
+            </div>
+        </div>
+    </section>
+
+    <main class="container">
+        <!-- LATAR BELAKANG -->
+        <section id="latar" class="section">
+            <h2><span class="bar"></span>Latar Belakang</h2>
+            <div class="card">
+                <p>
+                    Analisis ini memetakan pola penjualan buku di Gramedia Purwakarta sebagai dasar pengambilan
+                    keputusan stok, promosi, dan tata rak. Kolaborasi dengan UPI Purwakarta menempatkan hasil
+                    analitik sebagai jembatan antara kebutuhan akademik–kemahasiswaan dan strategi ritel toko.
+                </p>
+                <p>
+                    <b>Keterkaitan dengan peluang kerja sama UPI Purwakarta:</b> temuan kategori unggul, tren musiman,
+                    bestseller, price band favorit, hingga dampak promosi dapat langsung diterjemahkan menjadi program
+                    bersama <i>Prodi</i> (mis. PSTI), <i>Himpunan/BEM/UKM</i>, <i>Perpustakaan UPI</i>, dan unit
+                    pendukung (kemitraan,
+                    karier, riset). Contohnya: kurasi “Pojok Bacaan Prodi”, kuliah tamu penulis dan bedah buku, paket
+                    bundling harga ramah mahasiswa, keanggotaan/loyalty kampus, serta proyek magang/riset analitik
+                    data ritel yang memperkaya capaian pembelajaran.
+                </p>
+                <div class="tags" aria-label="contoh peluang">
+                    <span class="tag">Pojok Bacaan Prodi</span>
+                    <span class="tag">Kuliah Tamu Penulis</span>
+                    <span class="tag">Bundling Harga Mahasiswa</span>
+                    <span class="tag">Keanggotaan Kampus</span>
+                    <span class="tag">Magang/Riset Data</span>
+                    <span class="tag">Dashboard Bersama</span>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- PERTANYAAN BISNIS -->
+        <section id="pb" class="section">
+            <h2><span class="bar"></span>Pertanyaan Bisnis & Visualisasi</h2>
+            <div class="grid">
+                <!-- PB#1 -->
+                <article class="card q-card" id="pb1">
+                    <header>
+                        <div>
+                            <h3 class="q-title">PB#1 – Kategori apa yang menyumbang penjualan terbesar?</h3>
+                            <p class="q-desc">Komposisi pendapatan per kategori untuk prioritas stok & promosi.</p>
+                            <div class="q-meta"><span class="pill">Bar</span><span class="pill">Total per
+                                    kategori</span></div>
+                        </div>
+                    </header>
+                    <div class="chart-box"><canvas id="chartKategori" aria-label="Bar kategori penjualan"></canvas>
+                    </div>
+                    <div class="insight">
+                        <div class="muted">Kesimpulan singkat:</div>
+                        <div id="insKategori"><em>Menunggu data…</em></div>
+                    </div>
+                </article>
+
+                <!-- PB#2 -->
+                <article class="card q-card" id="pb2">
+                    <header>
+                        <div>
+                            <h3 class="q-title">PB#2 – Bagaimana tren penjualan bulanan sepanjang tahun?</h3>
+                            <p class="q-desc">Deteksi pola musiman & momentum promosi.</p>
+                            <div class="q-meta"><span class="pill">Line (area)</span><span class="pill">Per bulan</span>
+                            </div>
+                        </div>
+                    </header>
+                    <div class="chart-box"><canvas id="chartBulanan" aria-label="Line tren bulanan"></canvas></div>
+                    <div class="insight">
+                        <div class="muted">Kesimpulan singkat:</div>
+                        <div id="insBulanan"><em>Menunggu data…</em></div>
+                    </div>
+                </article>
+
+                <!-- PB#3 -->
+                <article class="card q-card" id="pb3">
+                    <header>
+                        <div>
+                            <h3 class="q-title">PB#3 – Judul/penulis mana yang menjadi kontributor terbesar?</h3>
+                            <p class="q-desc">Bestseller untuk penataan display & kerja sama penerbit.</p>
+                            <div class="q-meta"><span class="pill">Horizontal Bar</span><span class="pill">Top N</span>
+                            </div>
+                        </div>
+                    </header>
+                    <div class="chart-box"><canvas id="chartTop" aria-label="Horizontal bar top judul/penulis"></canvas>
+                    </div>
+                    <div class="insight">
+                        <div class="muted">Kesimpulan singkat:</div>
+                        <div id="insTop"><em>Menunggu data…</em></div>
+                    </div>
+                </article>
+
+                <!-- PB#4 -->
+                <article class="card q-card" id="pb4">
+                    <header>
+                        <div>
+                            <h3 class="q-title">PB#4 – Penerbit mana yang berkontribusi terbesar?</h3>
+                            <p class="q-desc">Memahami pemasok strategis untuk kolaborasi & alokasi rak.</p>
+                            <div class="q-meta"><span class="pill">Donut</span><span class="pill">Total per
+                                    penerbit</span></div>
+                        </div>
+                    </header>
+                    <div class="chart-box"><canvas id="chartPenerbit" aria-label="Donut kontribusi penerbit"></canvas>
+                    </div>
+                    <div class="insight">
+                        <div class="muted">Kesimpulan singkat:</div>
+                        <div id="insPenerbit"><em>Menunggu data…</em></div>
+                    </div>
+                </article>
+
+                <!-- PB#5 -->
+                <article class="card q-card" id="pb5">
+                    <header>
+                        <div>
+                            <h3 class="q-title">PB#5 – Pola penjualan per hari (Sen–Min)?</h3>
+                            <p class="q-desc">Untuk jadwal staf & aktivitas promosi mingguan.</p>
+                            <div class="q-meta"><span class="pill">Bar</span><span class="pill">Agregat per hari</span>
+                            </div>
+                        </div>
+                    </header>
+                    <div class="chart-box"><canvas id="chartWeekday" aria-label="Bar penjualan per hari"></canvas></div>
+                    <div class="insight">
+                        <div class="muted">Kesimpulan singkat:</div>
+                        <div id="insWeekday"><em>Menunggu data…</em></div>
+                    </div>
+                </article>
+
+                <!-- PB#6 -->
+                <article class="card q-card" id="pb6">
+                    <header>
+                        <div>
+                            <h3 class="q-title">PB#6 – Rentang harga mana yang paling laku?</h3>
+                            <p class="q-desc">Preferensi daya beli untuk strategi bundling & diskon.</p>
+                            <div class="q-meta"><span class="pill">Bar</span><span class="pill">Distribusi price
+                                    band</span></div>
+                        </div>
+                    </header>
+                    <div class="chart-box"><canvas id="chartPriceBand" aria-label="Bar distribusi price band"></canvas>
+                    </div>
+                    <div class="insight">
+                        <div class="muted">Kesimpulan singkat:</div>
+                        <div id="insPriceBand"><em>Menunggu data…</em></div>
+                    </div>
+                </article>
+
+                <!-- PB#7 -->
+                <article class="card q-card" id="pb7">
+                    <header>
+                        <div>
+                            <h3 class="q-title">PB#7 – Seberapa besar dampak promosi?</h3>
+                            <p class="q-desc">Perbandingan penjualan bulanan: promo vs non-promo.</p>
+                            <div class="q-meta"><span class="pill">Grouped Bar</span><span class="pill">Promo vs
+                                    Non-promo</span></div>
+                        </div>
+                    </header>
+                    <div class="chart-box"><canvas id="chartPromo"
+                            aria-label="Bar promo vs non-promo per bulan"></canvas></div>
+                    <div class="insight">
+                        <div class="muted">Kesimpulan singkat:</div>
+                        <div id="insPromo"><em>Menunggu data…</em></div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- KESIMPULAN -->
+        <section id="kesimpulan" class="section">
+            <h2><span class="bar"></span>Kesimpulan Visualisasi Data</h2>
+            <div class="card" id="kesimpulanAkhir">
+                <p class="muted">Ringkasan otomatis dari seluruh visualisasi (berbasis DATA).</p>
+                <div id="insRingkas"><em>Ringkasan akan terisi berdasarkan data.</em></div>
+            </div>
+        </section>
+
+        <section id="upi" class="section">
+            <h2><span class="bar"></span>Kesimpulan Rekomendasi Kerjasama - UPI Purwakarta</h2>
+            <div class="card">
+                <p id="upiConclusion" class="muted"><em>Menunggu ringkasan berbasis data…</em></p>
+                <div class="table-wrap">
+                    <table class="tbl">
+                        <thead>
+                            <tr>
+                                <th style="width:18%">Fokus Kerja Sama</th>
+                                <th style="width:16%">Mitra</th>
+                                <th style="width:24%">Dasar Data</th>
+                                <th style="width:22%">Bentuk Program</th>
+                                <th style="width:10%">KPI Awal</th>
+                                <th style="width:10%">Waktu</th>
+                            </tr>
+                        </thead>
+                        <tbody id="upiTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <footer><small>© 2025 – Kolaborasi UPI Purwakarta · by Rafli A.</small></footer>
+    </main>
+
+    <script>
+        /* ============================================================
+           💾 GANTI DATA DI SINI SESUAI OUTPUT NOTEBOOK ANDA
+        ============================================================ */
+        const DATA = {
+            // PB#1 – kategori
+            kategori: [
+                { nama: "Fiksi", penjualan: 1420 },
+                { nama: "Nonfiksi", penjualan: 1230 },
+                { nama: "Anak", penjualan: 980 },
+                { nama: "Komik", penjualan: 860 },
+                { nama: "Bisnis", penjualan: 760 },
+                { nama: "Agama", penjualan: 640 }
+            ],
+            // PB#2 – bulanan
+            bulanan: [
+                { bulan: "2025-01", penjualan: 9200 },
+                { bulan: "2025-02", penjualan: 9800 },
+                { bulan: "2025-03", penjualan: 10100 },
+                { bulan: "2025-04", penjualan: 9600 },
+                { bulan: "2025-05", penjualan: 11050 },
+                { bulan: "2025-06", penjualan: 12300 },
+                { bulan: "2025-07", penjualan: 11800 }
+            ],
+            // PB#3 – top judul/penulis
+            topItem: [
+                { label: "Judul A", penjualan: 820 },
+                { label: "Judul B", penjualan: 760 },
+                { label: "Judul C", penjualan: 690 },
+                { label: "Judul D", penjualan: 570 },
+                { label: "Judul E", penjualan: 560 },
+                { label: "Judul F", penjualan: 550 },
+                { label: "Judul G", penjualan: 510 },
+                { label: "Judul H", penjualan: 500 },
+                { label: "Judul I", penjualan: 460 },
+                { label: "Judul J", penjualan: 420 },
+                { label: "Judul K", penjualan: 410 }
+            ],
+            topN: 10,
+
+            // PB#4 – penerbit
+            penerbit: [
+                { nama: "Gramedia Pustaka Utama", penjualan: 5400 },
+                { nama: "Mizan", penjualan: 3100 },
+                { nama: "Elex Media", penjualan: 2700 },
+                { nama: "Bentang", penjualan: 1800 },
+                { nama: "Andi", penjualan: 1200 }
+            ],
+
+            // PB#5 – weekday (Sen..Min)
+            weekday: [
+                { hari: "Sen", penjualan: 1500 },
+                { hari: "Sel", penjualan: 1600 },
+                { hari: "Rab", penjualan: 1700 },
+                { hari: "Kam", penjualan: 1800 },
+                { hari: "Jum", penjualan: 2100 },
+                { hari: "Sab", penjualan: 2600 },
+                { hari: "Min", penjualan: 2300 }
+            ],
+
+            // PB#6 – price band
+            priceBands: [
+                { band: "<50rb", penjualan: 2200 },
+                { band: "50–99rb", penjualan: 4100 },
+                { band: "100–149rb", penjualan: 1800 },
+                { band: "150–199rb", penjualan: 900 },
+                { band: "≥200rb", penjualan: 350 }
+            ],
+
+            // PB#7 – promo vs non-promo per bulan
+            bulananPromo: [
+                { bulan: "2025-01", promo: 1800, nonpromo: 7400 },
+                { bulan: "2025-02", promo: 2100, nonpromo: 7700 },
+                { bulan: "2025-03", promo: 2300, nonpromo: 7800 },
+                { bulan: "2025-04", promo: 2000, nonpromo: 7600 },
+                { bulan: "2025-05", promo: 2800, nonpromo: 8250 },
+                { bulan: "2025-06", promo: 3600, nonpromo: 8700 },
+                { bulan: "2025-07", promo: 3200, nonpromo: 8600 }
+            ]
+        };
+
+        /* ======================= Util & Helpers ======================= */
+        const fmtIDR = (v) => new Intl.NumberFormat('id-ID', { maximumFractionDigits: 0 }).format(v);
+        const bulanID = (ym) => { const [y, m] = ym.split("-").map(Number); const d = new Date(y, m - 1, 1); return d.toLocaleDateString('id-ID', { month: 'short', year: 'numeric' }); };
+        const makeAlpha = (hex, alpha = 0.2) => { const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex); if (!m) return `rgba(90,162,255,${alpha})`; const r = parseInt(m[1], 16), g = parseInt(m[2], 16), b = parseInt(m[3], 16); return `rgba(${r},${g},${b},${alpha})`; };
+        const brandHex = getComputedStyle(document.documentElement).getPropertyValue('--brand').trim() || '#5aa2ff';
+        const accentHex = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#41d3bd';
+        const sum = (arr, key) => arr.reduce((s, d) => s + (key ? d[key] : d), 0);
+        const pct = (a, b) => b ? (a / b * 100) : 0;
+
+        /* ========================== Charts =========================== */
+        const ctxKategori = document.getElementById('chartKategori').getContext('2d');
+        const ctxBulanan = document.getElementById('chartBulanan').getContext('2d');
+        const ctxTop = document.getElementById('chartTop').getContext('2d');
+        const ctxPenerbit = document.getElementById('chartPenerbit').getContext('2d');
+        const ctxWeekday = document.getElementById('chartWeekday').getContext('2d');
+        const ctxPriceBand = document.getElementById('chartPriceBand').getContext('2d');
+        const ctxPromo = document.getElementById('chartPromo').getContext('2d');
+
+        // PB#1 – Kategori
+        const labelsKategori = DATA.kategori.map(d => d.nama);
+        const dataKategori = DATA.kategori.map(d => d.penjualan);
+        const chartKategori = new Chart(ctxKategori, {
+            type: 'bar',
+            data: { labels: labelsKategori, datasets: [{ label: 'Penjualan', data: dataKategori, backgroundColor: makeAlpha(brandHex, .35), borderColor: brandHex, borderWidth: 1.5 }] },
+            options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { callback: v => fmtIDR(v) } } }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmtIDR(ctx.parsed.y)} unit` } } } }
+        });
+
+        // PB#2 – Bulanan (area)
+        const labelsBulanan = DATA.bulanan.map(d => bulanID(d.bulan));
+        const dataBulanan = DATA.bulanan.map(d => d.penjualan);
+        const gradient = ctxBulanan.createLinearGradient(0, 0, 0, 320); gradient.addColorStop(0, makeAlpha(accentHex, .35)); gradient.addColorStop(1, makeAlpha(accentHex, .02));
+        const chartBulanan = new Chart(ctxBulanan, {
+            type: 'line',
+            data: { labels: labelsBulanan, datasets: [{ label: 'Penjualan Bulanan', data: dataBulanan, fill: true, backgroundColor: gradient, borderColor: accentHex, borderWidth: 2, tension: .28, pointRadius: 3, pointHoverRadius: 5 }] },
+            options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { beginAtZero: false, ticks: { callback: v => fmtIDR(v) } } }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmtIDR(ctx.parsed.y)} unit` } } } }
+        });
+
+        // PB#3 – Top judul/penulis (Horizontal)
+        const sortedTop = [...DATA.topItem].sort((a, b) => b.penjualan - a.penjualan).slice(0, DATA.topN || 10);
+        const labelsTop = sortedTop.map(d => d.label);
+        const dataTop = sortedTop.map(d => d.penjualan);
+        const chartTop = new Chart(ctxTop, {
+            type: 'bar',
+            data: { labels: labelsTop, datasets: [{ label: 'Penjualan', data: dataTop, backgroundColor: makeAlpha(brandHex, .28), borderColor: brandHex, borderWidth: 1.2 }] },
+            options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, scales: { x: { ticks: { callback: v => fmtIDR(v) } }, y: { grid: { display: false } } }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${fmtIDR(ctx.parsed.x)} unit` } } } }
+        });
+
+        // PB#4 – Donut penerbit
+        const labelsPenerbit = DATA.penerbit.map(d => d.nama);
+        const dataPenerbit = DATA.penerbit.map(d => d.penjualan);
+        const donutColors = labelsPenerbit.map((_, i) => i % 2 === 0 ? makeAlpha(brandHex, .45) : makeAlpha(accentHex, .45));
+        const donutBorders = labelsPenerbit.map((_, i) => i % 2 === 0 ? brandHex : accentHex);
+        const chartPenerbit = new Chart(ctxPenerbit, {
+            type: 'doughnut',
+            data: { labels: labelsPenerbit, datasets: [{ data: dataPenerbit, backgroundColor: donutColors, borderColor: donutBorders, borderWidth: 1.2, hoverOffset: 4 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' }, tooltip: { callbacks: { label: c => ` ${c.label}: ${fmtIDR(c.parsed)} unit` } } } }
+        });
+
+        // PB#5 – Weekday
+        const orderWeek = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
+        const weekdaySorted = [...DATA.weekday].sort((a, b) => orderWeek.indexOf(a.hari) - orderWeek.indexOf(b.hari));
+        const labelsWeekday = weekdaySorted.map(d => d.hari);
+        const dataWeekday = weekdaySorted.map(d => d.penjualan);
+        const chartWeekday = new Chart(ctxWeekday, {
+            type: 'bar',
+            data: { labels: labelsWeekday, datasets: [{ label: 'Penjualan', data: dataWeekday, backgroundColor: makeAlpha(brandHex, .35), borderColor: brandHex, borderWidth: 1.5 }] },
+            options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { callback: v => fmtIDR(v) } } }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ` ${fmtIDR(c.parsed.y)} unit` } } } }
+        });
+
+        // PB#6 – Price band
+        const labelsPB = DATA.priceBands.map(d => d.band);
+        const dataPB = DATA.priceBands.map(d => d.penjualan);
+        const chartPriceBand = new Chart(ctxPriceBand, {
+            type: 'bar',
+            data: { labels: labelsPB, datasets: [{ label: 'Penjualan', data: dataPB, backgroundColor: makeAlpha(accentHex, .35), borderColor: accentHex, borderWidth: 1.5 }] },
+            options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { callback: v => fmtIDR(v) } } }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ` ${fmtIDR(c.parsed.y)} unit` } } } }
+        });
+
+        // PB#7 – Promo vs Non-promo (Grouped)
+        const labelsPromo = DATA.bulananPromo.map(d => bulanID(d.bulan));
+        const dataPromo = DATA.bulananPromo.map(d => d.promo);
+        const dataNon = DATA.bulananPromo.map(d => d.nonpromo);
+        const chartPromo = new Chart(ctxPromo, {
+            type: 'bar',
+            data: {
+                labels: labelsPromo, datasets: [
+                    { label: 'Promo', data: dataPromo, backgroundColor: makeAlpha(brandHex, .4), borderColor: brandHex, borderWidth: 1.2 },
+                    { label: 'Non-promo', data: dataNon, backgroundColor: makeAlpha(accentHex, .35), borderColor: accentHex, borderWidth: 1.2 }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: false }, y: { beginAtZero: true, ticks: { callback: v => fmtIDR(v) } } }, plugins: { legend: { position: 'bottom' }, tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${fmtIDR(c.parsed.y)} unit` } } } }
+        });
+
+        /* ===================== Insights Otomatis ===================== */
+        function insightKategori(arr) {
+            if (!arr?.length) return "Data kategori kosong.";
+            const total = sum(arr, 'penjualan');
+            const top = arr.reduce((a, b) => a.penjualan > b.penjualan ? a : b);
+            const share = pct(top.penjualan, total);
+            return `<b>${top.nama}</b> memimpin dengan ${fmtIDR(top.penjualan)} unit (~${share.toFixed(1)}% kontribusi).`;
+        }
+        function insightBulanan(arr) {
+            if (!arr?.length) return "Data bulanan kosong.";
+            const first = arr[0].penjualan, last = arr[arr.length - 1].penjualan;
+            const delta = last - first, pctDelta = first ? (delta / first * 100) : 0;
+            const peak = arr.reduce((a, b) => a.penjualan > b.penjualan ? a : b);
+            return `Tren ${delta >= 0 ? '<b>naik</b>' : '<b>turun</b>'} (${delta >= 0 ? '+' : ''}${fmtIDR(delta)}; ${pctDelta >= 0 ? '+' : ''}${pctDelta.toFixed(1)}%). Puncak di <b>${bulanID(peak.bulan)}</b> (${fmtIDR(peak.penjualan)} unit).`;
+        }
+        function insightTop(arr, N = 3) {
+            if (!arr?.length) return "Data top item kosong.";
+            const top = [...arr].sort((a, b) => b.penjualan - a.penjualan).slice(0, N);
+            const list = top.map((d, i) => `${i + 1}) <b>${d.label}</b> (${fmtIDR(d.penjualan)})`).join('; ');
+            return `Bestseller: ${list}.`;
+        }
+        function insightPenerbit(arr) {
+            if (!arr?.length) return "Data penerbit kosong.";
+            const total = sum(arr, 'penjualan');
+            const top = arr.reduce((a, b) => a.penjualan > b.penjualan ? a : b);
+            return `<b>${top.nama}</b> paling dominan (${fmtIDR(top.penjualan)} unit; ~${pct(top.penjualan, total).toFixed(1)}%).`;
+        }
+        function insightWeekday(arr) {
+            if (!arr?.length) return "Data weekday kosong.";
+            const best = arr.reduce((a, b) => a.penjualan > b.penjualan ? a : b);
+            const worst = arr.reduce((a, b) => a.penjualan < b.penjualan ? a : b);
+            return `Hari tersibuk: <b>${best.hari}</b> (${fmtIDR(best.penjualan)}). Tersantai: <b>${worst.hari}</b> (${fmtIDR(worst.penjualan)}).`;
+        }
+        function insightPriceBand(arr) {
+            if (!arr?.length) return "Data price band kosong.";
+            const top = arr.reduce((a, b) => a.penjualan > b.penjualan ? a : b);
+            return `Rentang paling laku: <b>${top.band}</b> (${fmtIDR(top.penjualan)} unit).`;
+        }
+        function insightPromo(arr) {
+            if (!arr?.length) return "Data promo kosong.";
+            const tp = sum(arr.map(d => d.promo)), tn = sum(arr.map(d => d.nonpromo)), tt = tp + tn;
+            const share = pct(tp, tt).toFixed(1);
+            const peakP = arr.reduce((a, b) => a.promo > b.promo ? a : b);
+            return `Kontribusi <b>promo</b> ~${share}% dari total. Puncak promo di <b>${bulanID(peakP.bulan)}</b> (${fmtIDR(peakP.promo)} unit).`;
+        }
+
+        function ringkasanAkhir() {
+            const plain = s => s.replaceAll(/<[^>]+>/g, '');
+            const i1 = plain(insightKategori(DATA.kategori));
+            const i2 = plain(insightBulanan(DATA.bulanan));
+            const i3 = plain(insightTop(DATA.topItem, 3));
+            const i4 = plain(insightPenerbit(DATA.penerbit));
+            const i5 = plain(insightWeekday(DATA.weekday));
+            const i6 = plain(insightPriceBand(DATA.priceBands));
+            const i7 = plain(insightPromo(DATA.bulananPromo));
+            return `
+        <p><b>Inti Temuan:</b> ${i1} ${i2} ${i3} ${i4} ${i5} ${i6} ${i7}</p>
+        <p class="muted">
+          <span class="kbd">Rekomendasi cepat</span> ·
+          (1) Prioritaskan kategori & penerbit unggul untuk display; 
+          (2) Selaraskan kampanye dengan bulan & hari tersibuk; 
+          (3) Optimalkan bundling pada price band favorit; 
+          (4) Jadwalkan promosi saat momentum tertinggi.
+        </p>
+      `;
+        }
+
+        /* ======= UPI: Kesimpulan & Tabel Rekomendasi (data-driven) ======= */
+        function buildUPIConclusion() {
+            const cat = DATA.kategori?.length ? DATA.kategori.reduce((a, b) => a.penjualan > b.penjualan ? a : b) : null;
+            const catShare = cat ? pct(cat.penjualan, sum(DATA.kategori, 'penjualan')).toFixed(1) : '—';
+            const pub = DATA.penerbit?.length ? DATA.penerbit.reduce((a, b) => a.penjualan > b.penjualan ? a : b) : null;
+            const pubShare = pub ? pct(pub.penjualan, sum(DATA.penerbit, 'penjualan')).toFixed(1) : '—';
+            const weekBest = DATA.weekday?.length ? DATA.weekday.reduce((a, b) => a.penjualan > b.penjualan ? a : b) : { hari: '—' };
+            const peakMonthObj = DATA.bulanan?.length ? DATA.bulanan.reduce((a, b) => a.penjualan > b.penjualan ? a : b) : { bulan: '—', penjualan: 0 };
+            const peakMonth = peakMonthObj.bulan !== '—' ? bulanID(peakMonthObj.bulan) : '—';
+            const bandTop = DATA.priceBands?.length ? DATA.priceBands.reduce((a, b) => a.penjualan > b.penjualan ? a : b) : { band: '—', penjualan: 0 };
+            const promoShare = DATA.bulananPromo?.length ? (() => {
+                const tp = sum(DATA.bulananPromo.map(d => d.promo));
+                const tn = sum(DATA.bulananPromo.map(d => d.nonpromo));
+                return pct(tp, tp + tn).toFixed(1);
+            })() : '—';
+            return `
+        <b>Kesimpulan untuk UPI:</b> fokus kurasi pada kategori <b>${cat ? cat.nama : '—'}</b> (~${catShare}%),
+        perkuat kemitraan dengan penerbit <b>${pub ? pub.nama : '—'}</b> (~${pubShare}%),
+        jadwalkan aktivasi pada <b>${weekBest.hari}</b> serta momen <b>${peakMonth}</b>,
+        tawarkan paket harga pada rentang favorit <b>${bandTop.band}</b>,
+        dan manfaatkan skema promo (kontribusi ±<b>${promoShare}%</b>) untuk program kampus.
+      `;
+        }
+
+        function generateUPIRecommendations() {
+            const rows = [];
+            const cat = DATA.kategori?.length ? DATA.kategori.reduce((a, b) => a.penjualan > b.penjualan ? a : b) : null;
+            const catShare = cat ? pct(cat.penjualan, sum(DATA.kategori, 'penjualan')).toFixed(1) : null;
+
+            const pub = DATA.penerbit?.length ? DATA.penerbit.reduce((a, b) => a.penjualan > b.penjualan ? a : b) : null;
+            const pubShare = pub ? pct(pub.penjualan, sum(DATA.penerbit, 'penjualan')).toFixed(1) : null;
+
+            const weekBest = DATA.weekday?.length ? DATA.weekday.reduce((a, b) => a.penjualan > b.penjualan ? a : b) : { hari: '—', penjualan: 0 };
+            const weekWorst = DATA.weekday?.length ? DATA.weekday.reduce((a, b) => a.penjualan < b.penjualan ? a : b) : { hari: '—', penjualan: 0 };
+
+            const peakMonthObj = DATA.bulanan?.length ? DATA.bulanan.reduce((a, b) => a.penjualan > b.penjualan ? a : b) : { bulan: '—', penjualan: 0 };
+            const peakMonth = peakMonthObj.bulan !== '—' ? bulanID(peakMonthObj.bulan) : '—';
+
+            const bandTop = DATA.priceBands?.length ? DATA.priceBands.reduce((a, b) => a.penjualan > b.penjualan ? a : b) : { band: '—', penjualan: 0 };
+
+            const promoAgg = DATA.bulananPromo?.length ? (() => {
+                const tp = sum(DATA.bulananPromo.map(d => d.promo));
+                const tn = sum(DATA.bulananPromo.map(d => d.nonpromo));
+                const share = pct(tp, tp + tn);
+                const peakP = DATA.bulananPromo.reduce((a, b) => a.promo > b.promo ? a : b);
+                return { share: share.toFixed(1), peakMonth: bulanID(peakP.bulan), peakVal: tp ? fmtIDR(peakP.promo) : '0' };
+            })() : { share: '—', peakMonth: '—', peakVal: '0' };
+
+            const topTitles = [...(DATA.topItem || [])].sort((a, b) => b.penjualan - a.penjualan).slice(0, 3).map(d => d.label).join(', ');
+
+            // 1. Kurasi & display kategori unggul
+            rows.push({
+                fokus: `Kurasi & Display ${cat ? cat.nama : 'Kategori Teratas'}`,
+                mitra: "Gramedia (Store Manager), Dosen UPI",
+                dasar: cat ? `${cat.nama} menyumbang ~${catShare}% dari total kategori` : "Kategori teratas menyumbang porsi dominan",
+                program: `Pojok ${cat ? cat.nama : 'Kategori Teratas'} UPI × Gramedia; list bacaan dosen; bedah buku`,
+                kpi: "Uplift penjualan kategori (+10–20%)",
+                waktu: peakMonth
+            });
+
+            // 2. Kolaborasi dengan penerbit dominan
+            rows.push({
+                fokus: `Kemitraan Penerbit (${pub ? pub.nama : 'Penerbit Utama'})`,
+                mitra: `${pub ? pub.nama : 'Penerbit Utama'}, Prodi UPI`,
+                dasar: pub ? `Kontribusi ~${pubShare}% dari total penerbit` : "Penerbit utama berkontribusi signifikan",
+                program: "Kuliah tamu penulis; pre-order kelas; bundling materi ajar",
+                kpi: "Jumlah event & PO; sell-through",
+                waktu: peakMonth
+            });
+
+            // 3. Kalender aktivasi di hari & bulan puncak
+            rows.push({
+                fokus: "Aktivasi Kampus di Hari/Bulan Puncak",
+                mitra: "BEM/UKM UPI, Gramedia",
+                dasar: `Hari tersibuk: ${weekBest.hari}; tersantai: ${weekWorst.hari}. Puncak: ${peakMonth}`,
+                program: "Student Day @store; kelas singkat; diskon khusus mahasiswa",
+                kpi: "Traffic & konversi harian",
+                waktu: `${weekBest.hari}, ${peakMonth}`
+            });
+
+            // 4. Bundling sesuai price band favorit
+            rows.push({
+                fokus: `Bundling Rentang Harga (${bandTop.band})`,
+                mitra: "Gramedia, Himpunan Mahasiswa",
+                dasar: `Price band terlaris: ${bandTop.band} (${fmtIDR(bandTop.penjualan)} unit)`,
+                program: "Paket bundling tematik; kupon kampus",
+                kpi: "Average basket size, attach rate",
+                waktu: "Selama periode akademik"
+            });
+
+            // 5. Aktivasi bestseller
+            rows.push({
+                fokus: "Program Bestseller & Penulis",
+                mitra: "Penerbit terkait, Komunitas literasi UPI",
+                dasar: `Top judul: ${topTitles || '—'}`,
+                program: "Bedah buku, penandatanganan, display premium",
+                kpi: "Uplift judul top (+20–30%)",
+                waktu: "Sejalan kalender event"
+            });
+
+            // 6. Skema promo & anggota kampus
+            rows.push({
+                fokus: "Skema Promo & Membership Kampus",
+                mitra: "Gramedia, Kemahasiswaan UPI",
+                dasar: `Kontribusi promo ±${promoAgg.share}% (puncak: ${promoAgg.peakMonth}, ${promoAgg.peakVal} unit)`,
+                program: "Kartu anggota kampus; cashback segmen mahasiswa",
+                kpi: "Share promo, repeat rate",
+                waktu: promoAgg.peakMonth
+            });
+
+            // 7. Data sharing + magang/riset
+            rows.push({
+                fokus: "Data Sharing + Magang/Riset",
+                mitra: "UPI (Prodi terkait), Manajemen Toko",
+                dasar: "Kebutuhan pemantauan stok, tren, dan evaluasi program",
+                program: "Feed data mingguan; proyek magang analitik; dashboard bersama",
+                kpi: "SLA data, jumlah proyek, rekomendasi terimplementasi",
+                waktu: "Berjalan (mingguan)"
+            });
+
+            return rows;
+        }
+
+        // Tulis ke halaman
+        document.getElementById('insKategori').innerHTML = insightKategori(DATA.kategori);
+        document.getElementById('insBulanan').innerHTML = insightBulanan(DATA.bulanan);
+        document.getElementById('insTop').innerHTML = insightTop(DATA.topItem, 3);
+        document.getElementById('insPenerbit').innerHTML = insightPenerbit(DATA.penerbit);
+        document.getElementById('insWeekday').innerHTML = insightWeekday(DATA.weekday);
+        document.getElementById('insPriceBand').innerHTML = insightPriceBand(DATA.priceBands);
+        document.getElementById('insPromo').innerHTML = insightPromo(DATA.bulananPromo);
+        document.getElementById('insRingkas').innerHTML = ringkasanAkhir();
+
+        // UPI: ringkasan & tabel
+        document.getElementById('upiConclusion').innerHTML = buildUPIConclusion();
+        const tbody = document.getElementById('upiTbody');
+        generateUPIRecommendations().forEach(r => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+        <td><b>${r.fokus}</b></td>
+        <td>${r.mitra}</td>
+        <td>${r.dasar}</td>
+        <td>${r.program}</td>
+        <td>${r.kpi}</td>
+        <td>${r.waktu}</td>
+      `;
+            tbody.appendChild(tr);
+        });
+
+        /* =================== Resize Observer (UX) ==================== */
+        const ro = new ResizeObserver(() => {
+            chartKategori.resize(); chartBulanan.resize(); chartTop.resize();
+            chartPenerbit.resize(); chartWeekday.resize(); chartPriceBand.resize(); chartPromo.resize();
+        });
+        document.querySelectorAll('.chart-box').forEach(el => ro.observe(el));
+    </script>
+</body>
+
+</html>
